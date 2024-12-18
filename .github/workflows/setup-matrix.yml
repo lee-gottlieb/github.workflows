@@ -31,7 +31,7 @@ jobs:
     name: Run Matrix
     strategy:
        max-parallel: ${{ fromJSON(needs.setup.outputs.max_parallel_jobs) }}
-       matrix: ${{ fromJSON(needs.setup.outputs.matrix_jobs) }}
+       matrix: ${{ fromJSON(needs.setup.outputs.matrix_jobs.include) }}
        fail-fast: false
     needs: [setup]
     runs-on: 3shape-ubuntu-latest

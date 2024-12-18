@@ -30,5 +30,5 @@ runs:
         Write-Host ""
 
         $jobsHashJson = PrepareJobsJson -jobs $jobsObject
-        "max_parallel_jobs=$jobsHashJson" >> $env:GITHUB_OUTPUT
+        "max_parallel_jobs=$max_parallel_jobs" >> $env:GITHUB_OUTPUT
         "matrix_jobs=$jobsHashJson" >> $env:GITHUB_OUTPUT
