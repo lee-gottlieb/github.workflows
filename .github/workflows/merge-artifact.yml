@@ -19,6 +19,7 @@ jobs:
       uses: actions/checkout@v4
       with:
         fetch-depth: 0
+
     - name: Setup strategy matrix
       id: setup-matrix
       uses: ./.github/actions/setup-matrix
@@ -37,6 +38,11 @@ jobs:
     needs: [setup]
     runs-on: ubuntu-latest
     steps:
+      - name: Get sources from github
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
       - name: Save OutputArtifacts
         shell : pwsh
         run: |
