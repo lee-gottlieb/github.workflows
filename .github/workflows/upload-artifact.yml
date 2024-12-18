@@ -6,7 +6,7 @@ on:
       GreetingText:
         description: 'What do you want to say'
         required: true
-        default: 'Hi, dispatch'
+        default: 'Hi, Upload artifact'
 
 env:
   GreetingText: ${{ github.event.inputs.GreetingText || 'hi, default' }}
@@ -20,20 +20,28 @@ jobs:
       shell: pwsh
       run: |
         # Input Values
-        Write-Host "Url: ${{ env.Url }}"
         Write-Host "GreetingText: ${{ env.GreetingText }}"
 
-    - name: Generate Token
-      id: generate_token
-      uses: actions/create-github-app-token@v1
+    - name: Get sources from github
+      uses: actions/checkout@v4
       with:
-        app-id: ${{ vars.GH_APP_IAMWGO_SECRET }}
-        private-key: ${{ secrets.GH_APP_IAMWGO_SECRET }}
-        owner: iamWGO
+        fetch-depth: 0
 
-    - name: Show Inputs
-      shell: pwsh
+    - name: Save TestFilter into json file
+      shell : pwsh
       run: |
-        # Get token value         
-        Write-Host ${{ steps.generate_token.outputs.token }} 
+        #Save sample file
+        $folderPath = "./TestOutputArtifacts/"
+        $TestFilterInfo = '{"include": ["test1", "test2"], "exclude": ["test3", "test4"]}' | ConvertTo-Json
+        Write-Host $TestFilterInfo
+        $TestFilterInfo | Out-File -FilePath "$folderPath/TestFilterInfo.json"    
+
+    - name: Generate specflow report based on runned tests
+      if: always()
+      uses: ../actions/generate-report
+      with:
+        TestNames: "sample-artifact"
+        TestRunType: "Playwright"
+        TestReportName: "test-report-name"
+        OutputArtifactsName: "OutputArtifacts"
  
