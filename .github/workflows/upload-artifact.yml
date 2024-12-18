@@ -32,7 +32,7 @@ jobs:
       run: |
         #Save sample file
         $folderPath = "./TestOutputArtifacts/"
-        
+
         if (-not (Test-Path $folderPath)) {
         New-Item -ItemType Directory -Path $folderPath
             Write-Host "Folder created at $folderPath"
@@ -41,10 +41,11 @@ jobs:
         }
 
         $jsonObject = @{
-          TestName = "sample-artifact""
-          TestFilter = "sample-filter"
+            TestName = "sample-artifact"
+            TestFilter = @{ 
+            include = @("test1", "test2")
+            exclude = @("test3", "test4")}
         }
-
         $TestFilterInfo = $jsonObject | ConvertTo-Json
         Write-Host $TestFilterInfo
         $TestFilterInfo | Out-File -FilePath "$folderPath/TestFilterInfo.json"    
