@@ -45,8 +45,7 @@ jobs:
         $TestFilterInfo | Out-File -FilePath "$folderPath/TestFilterInfo.json"    
 
     - name: Generate specflow report based on runned tests
-      if: always()
-      uses: ../actions/generate-report
+      uses: ./.github/actions/upload-artifact
       with:
         TestNames: "sample-artifact"
         TestRunType: "Playwright"
