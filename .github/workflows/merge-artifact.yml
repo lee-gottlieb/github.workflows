@@ -107,7 +107,7 @@ jobs:
       - name: Generate specflow report based on runned tests
         uses: ./.github/actions/upload-artifact
         with:
-          TestNames: "sample-artifact"
+          TestNames: "${{ matrix.Company }}"
           TestRunType: "Playwright"
           TestReportName: "${{ env.TestReport }}"
           OutputArtifactsName: "${{ env.OutputArtifacts }}"
