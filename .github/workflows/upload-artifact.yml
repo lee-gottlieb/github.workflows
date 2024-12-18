@@ -44,12 +44,12 @@ jobs:
         Write-Host $TestFilterInfo
         $TestFilterInfo | Out-File -FilePath "$folderPath/TestFilterInfo.json"    
 
-    # - name: Generate specflow report based on runned tests
-    #   if: always()
-    #   uses: ../actions/generate-report
-    #   with:
-    #     TestNames: "sample-artifact"
-    #     TestRunType: "Playwright"
-    #     TestReportName: "test-report-name"
-    #     OutputArtifactsName: "OutputArtifacts"
+    - name: Generate specflow report based on runned tests
+      if: always()
+      uses: ../actions/generate-report
+      with:
+        TestNames: "sample-artifact"
+        TestRunType: "Playwright"
+        TestReportName: "test-report-name"
+        OutputArtifactsName: "OutputArtifacts"
  
