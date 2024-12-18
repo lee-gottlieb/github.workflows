@@ -1,0 +1,49 @@
+name: workflow Dispatch
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+    inputs:
+      GreetingText:
+        description: 'Greeting Text'
+        required: true
+        default: 'Hello'
+      
+jobs:
+  labels-event:
+    runs-on: ubuntu-latest
+    if: contains(github.event.pull_request.labels.*.name, 'labels-event')
+    steps:
+      - name: labels-event
+        shell: pwsh
+        run: |
+          Write-Host "repository dispatch event"
+ 
+  input-event:
+    runs-on: ubuntu-latest
+    if: github.event.inputs.GreetingText != ''
+    steps:
+      - name: input-event
+        shell: pwsh
+        run: |
+          Write-Host "input-event"
+  
+  repository-event:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'repository_dispatch'
+    steps:
+      - name: repository-event
+        shell: pwsh
+        run: |
+          Write-Host "repository dispatch event"
+
+  dispatch-event:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch'
+    steps:
+      - name: dispatch-event
+        shell: pwsh
+        run: |
+          Write-Host "workflow dispatch event"   
