@@ -1,4 +1,4 @@
-name: workflow Dispatch
+name: Trigger event
 on:
   push:
     branches: [ main ]
