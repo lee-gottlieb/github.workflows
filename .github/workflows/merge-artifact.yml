@@ -1,4 +1,4 @@
-name: Upload artifact
+name: Merge uploaded artifact
 
 on:
   workflow_dispatch:
