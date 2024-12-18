@@ -4,8 +4,6 @@ on:
   workflow_dispatch:
 
 env:
-  TestReportFolder: 'TestReport'
-  OutputArtifactsFolder: 'TestOutputArtifacts'
   TestReport: 'Run-Tests-Report-${{ github.run_id }}-${{ github.run_attempt }}'
   OutputArtifacts: 'Tests-Output-Artifacts-${{ github.run_id }}-${{ github.run_attempt }}'
 
@@ -24,7 +22,7 @@ jobs:
       shell : pwsh
       run: |
         #Save sample file
-        $folderPath = "./${{env.OutputArtifactsFolder}}/"
+        $folderPath = "./TestOutputArtifacts/"
 
         if (-not (Test-Path $folderPath)) {
         New-Item -ItemType Directory -Path $folderPath
@@ -48,7 +46,7 @@ jobs:
       run: |
         #Save 10 html files
 
-        $folderPath = "./${{env.TestReportFolder}}/"
+        $folderPath = "./TestReport/"
         if (-not (Test-Path $folderPath)) {
         New-Item -ItemType Directory -Path $folderPath
             Write-Host "Folder created at $folderPath"
@@ -80,8 +78,8 @@ jobs:
       with:
         TestNames: "sample-artifact"
         TestRunType: "Playwright"
-        TestReportName: "test-report-name"
-        OutputArtifactsName: "output-artifacts-name"
+        TestReportName: "${{ env.TestReport }}"
+        OutputArtifactsName: "${{ env.OutputArtifacts }}"
 
   merge-artifact:
     name: Merge Artifact
