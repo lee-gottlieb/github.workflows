@@ -28,9 +28,8 @@ jobs:
 
   run-matrix:
     name: Run Matrix
-    # strategy:
-    #    max-parallel: ${{ fromJSON(needs.setup.outputs.max_parallel_jobs) }}
-    #    matrix: ${{ fromJSON(needs.setup.outputs.matrix_jobs) }}
+    strategy:
+       matrix: ${{ fromJSON(needs.setup.outputs.matrix_jobs) }}
     #    fail-fast: false
     needs: [setup]
     runs-on: ubuntu-latest
@@ -39,5 +38,5 @@ jobs:
       - name: Show Inputs
         shell: pwsh
         run: |
-          Write-Host "TestFilter: ${{ needs.setup.outputs.matrix_jobs }}"
+          Write-Host "TestFilter: ${{ matrix.TestFilter }}"
           Write-Host "Company: ${{ matrix.Company }}"
