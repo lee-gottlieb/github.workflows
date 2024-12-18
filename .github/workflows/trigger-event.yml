@@ -13,41 +13,37 @@ on:
       
 jobs:
   labels-event:
-    name: repository dispatch event
     runs-on: ubuntu-latest
     if: contains(github.event.pull_request.labels.*.name, 'labels-event')
     steps:
-      - name: Show Event
+      - name: labels-event
         shell: pwsh
         run: |
           Write-Host "repository dispatch event"
  
   input-event:
-    name: repository dispatch event
     runs-on: ubuntu-latest
     if: github.event.inputs.GreetingText != ''
     steps:
-      - name: Show Event
+      - name: input-event
         shell: pwsh
         run: |
           Write-Host "input-event"
   
   repository-event:
-    name: repository dispatch event
     runs-on: ubuntu-latest
     if: github.event_name == 'repository_dispatch'
     steps:
-      - name: Show Event
+      - name: repository-event
         shell: pwsh
         run: |
           Write-Host "repository dispatch event"
 
   dispatch-event:
-    name: workflow dispatch event
     runs-on: ubuntu-latest
     if: github.event_name == 'workflow_dispatch'
     steps:
-      - name: Show Event
+      - name: dispatch-event
         shell: pwsh
         run: |
           Write-Host "workflow dispatch event"   
