@@ -42,11 +42,9 @@ jobs:
 
         $jsonObject = @{
           TestName = "sample-artifact""
-          TestFilter = @{ 
-            include = @("test1", "test2")
-            exclude = @("test3", "test4")}
+          TestFilter = "sample-filter"
         }
-        
+
         $TestFilterInfo = $jsonObject | ConvertTo-Json
         Write-Host $TestFilterInfo
         $TestFilterInfo | Out-File -FilePath "$folderPath/TestFilterInfo.json"    
