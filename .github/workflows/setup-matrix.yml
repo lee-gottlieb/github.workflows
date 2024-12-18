@@ -39,5 +39,5 @@ jobs:
       - name: Show Inputs
         shell: pwsh
         run: |
-          Write-Host "TestFilter: ${{ needs.setup.outputs.max_parallel_jobs }}"
+          Write-Host "TestFilter: ${{ needs.setup.outputs.matrix_jobs }}"
           Write-Host "Company: ${{ matrix.Company }}"
