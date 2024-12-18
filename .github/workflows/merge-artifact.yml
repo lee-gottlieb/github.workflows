@@ -44,16 +44,7 @@ jobs:
     - name: Save TestFilter into json file
       shell : pwsh
       run: |
-        #Save 10 html files
-
-        $folderPath = "./TestReport/"
-        if (-not (Test-Path $folderPath)) {
-        New-Item -ItemType Directory -Path $folderPath
-            Write-Host "Folder created at $folderPath"
-        } else {
-            Write-Host "Folder already exists at $folderPath"
-        }
-
+        #Save 10 html files 
         $htmlBody = @"
         <!DOCTYPE html>
         <html lang="en">
@@ -69,7 +60,14 @@ jobs:
         </body>
         </html>
         "@
-        for ($i = 1; $i -le 10; $i++) {    
+        for ($i = 1; $i -le 10; $i++) {   
+           $folderPath = "./TestReport$($i)/"
+            if (-not (Test-Path $folderPath)) {
+            New-Item -ItemType Directory -Path $folderPath
+                Write-Host "Folder created at $folderPath"
+            } else {
+                Write-Host "Folder already exists at $folderPath"
+            } 
             $htmlBody | Out-File -FilePath "$folderPath/generate_html_$($i).html"
         }
 
@@ -91,7 +89,7 @@ jobs:
         uses: actions/upload-artifact/merge@v4
         with:
           name: ${{ env.TestReport }}
-          pattern: "${{ env.TestReport }}-*"
+          pattern: "${{ env.TestReport }}*"
           delete-merged: true
           
       - name: Merge Tests Output Artifacts
