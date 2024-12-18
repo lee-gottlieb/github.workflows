@@ -89,7 +89,7 @@ jobs:
         uses: actions/upload-artifact/merge@v4
         with:
           name: ${{ env.TestReport }}
-          pattern: "${{ env.TestReport }}*"
+          pattern: "${{ env.TestReport }}-*"
           delete-merged: true
           
       - name: Merge Tests Output Artifacts

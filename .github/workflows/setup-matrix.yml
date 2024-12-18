@@ -1,0 +1,38 @@
+name: Setup matrix
+
+on:
+  workflow_dispatch:
+
+jobs:
+  setup:
+    name: start-workflow
+    runs-on: ubuntu-latest
+    outputs:
+      max_parallel_jobs: ${{ steps.setup-matrix.outputs.max_parallel_jobs }}
+      matrix_jobs: ${{ steps.setup-matrix.outputs.matrix_jobs }}
+    steps:
+      - name: Get sources from github
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Setup strategy matrix
+        id: setup-matrix
+        uses: ./.github/actions/setup-matrix
+ 
+
+  run-matrix:
+    name: Run Matrix
+    strategy:
+       max-parallel: ${{ fromJSON(needs.setup.outputs.max_parallel_jobs) }}
+       matrix: ${{ fromJSON(needs.setup.outputs.matrix_jobs) }}
+       fail-fast: false
+    needs: [setup]
+    runs-on: 3shape-ubuntu-latest
+    if: needs.setup.outputs.matrix_jobs != '' && (github.event_name == 'workflow_dispatch')
+    steps:
+      - name: Show Inputs
+        shell: pwsh
+        run: |
+          Write-Host "TestFilter: ${{ matrix.TestFilter }}"
+          Write-Host "Company: ${{ matrix.Company }}"

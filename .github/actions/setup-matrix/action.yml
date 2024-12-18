@@ -1,0 +1,34 @@
+name: 'Setup strategy matrix'
+description: 'Setup strategy matrix for parallel run'
+
+outputs:
+  matrix_jobs:
+    description: Jobs
+    value: ${{ steps.set-matrix.outputs.matrix_jobs }}
+  max_parallel_jobs:
+    description: Jobs for run on Windows
+    value: ${{ steps.set-matrix.outputs.max_parallel_jobs }}
+
+runs:
+  using: 'composite'
+  steps: 
+    - name: Get Json Content
+      id: get-json
+      working-directory: ./scripts/setup-matrix
+      shell : pwsh
+      run: |
+        . .\functions.ps1
+
+        #Save sample file
+        # Get content setup-matrix.json
+        $jsonContent = Get-Content -Path ".\setup-matrix.json"
+        $jobsObject = $jsonContent | ConvertFrom-Json 
+        $max_parallel_jobs = $jobsObject.Count
+
+        Write-Host "total matrix = $max_parallel_jobs"
+        $jobsObject | Format-Table -AutoSize
+        Write-Host ""
+
+        $jobsHashJson = PrepareJobsJson -jobs $jobsObject
+        "max_parallel_jobs=$jobsHashJson" >> $env:GITHUB_OUTPUT
+        "matrix_jobs=$jobsHashJson" >> $env:GITHUB_OUTPUT
