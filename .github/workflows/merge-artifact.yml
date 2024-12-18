@@ -38,6 +38,12 @@ jobs:
     needs: [setup]
     runs-on: ubuntu-latest
     steps:
+      - name: Show Inputs
+        shell: pwsh
+        run: |
+          Write-Host "TestFilter: ${{ matrix.TestFilter }}"
+          Write-Host "Company: ${{ matrix.Company }}"
+
       - name: Get sources from github
         uses: actions/checkout@v4
         with:
@@ -47,7 +53,7 @@ jobs:
         shell : pwsh
         run: |
           #Save sample file
-          $folderPath = "./TestOutputArtifacts/"
+          $folderPath = "./TestOutputArtifacts/${{ matrix.Company }}"
 
           if (-not (Test-Path $folderPath)) {
           New-Item -ItemType Directory -Path $folderPath
@@ -86,7 +92,7 @@ jobs:
           </html>
           "@
 
-          $folderPath = "./TestReport"
+          $folderPath = "./TestReport/${{ matrix.Company }}"
           if (-not (Test-Path $folderPath)) {
           New-Item -ItemType Directory -Path $folderPath
               Write-Host "Folder created at $folderPath"
