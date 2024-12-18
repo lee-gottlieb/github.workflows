@@ -5,7 +5,7 @@ on:
 
 env:
   TestReportFolder: 'TestReport'
-  OutputArtifactsFolder: 'OutputArtifactsFolder'
+  OutputArtifactsFolder: 'TestOutputArtifacts'
   TestReport: 'Run-Tests-Report-${{ github.run_id }}-${{ github.run_attempt }}'
   OutputArtifacts: 'Tests-Output-Artifacts-${{ github.run_id }}-${{ github.run_attempt }}'
 
