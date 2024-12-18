@@ -85,6 +85,7 @@ jobs:
 
   merge-artifact:
     name: Merge Artifact
+    needs: [setup]
     runs-on: ubuntu-latest
     if: ${{ success() || failure() }} 
     steps:
