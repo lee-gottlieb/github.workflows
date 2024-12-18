@@ -42,4 +42,5 @@ jobs:
         run: |
           Write-Host "TestFilter: ${{ matrix.TestFilter }}"
           Write-Host "Company: ${{ matrix.Company }}"
-          write-host "matrix_jobs: ${{ fromJSON(needs.setup.outputs.matrix_jobs) }}"
+          $matrix_jobs = ${{ fromJSON(needs.setup.outputs.matrix_jobs) }}
+          $matrix_jobs | Format-Table -AutoSize
