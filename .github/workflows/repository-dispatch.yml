@@ -33,15 +33,29 @@ jobs:
         run: |
           Write-Host "matrix_jobs: ${{ steps.setup-matrix.outputs.matrix_jobs }}"
           Write-Host "max_parallel_jobs: ${{ steps.setup-matrix.outputs.max_parallel_jobs }}"
-
-  run-matrix:
-    name: Run Matrix
+  repository-event:
+    name: repository dispatch event
     strategy:
       matrix: ${{ fromJSON(needs.setup.outputs.matrix_jobs) }}
       fail-fast: false
     needs: [setup]
     runs-on: ubuntu-latest
-    if: github.event_name == 'repository_dispatch' # github.event_name == 'workflow_dispatch' || github.event_name == 'workflow_call' ||
+    if: github.event_name == 'repository_dispatch'
+    steps:
+      - name: Show Inputs
+        shell: pwsh
+        run: |
+          Write-Host "TestFilter: ${{ matrix.TestFilter }}"
+          Write-Host "Company: ${{ matrix.Company }}" 
+
+  dispatch-event:
+    name: workflow dispatch event
+    strategy:
+      matrix: ${{ fromJSON(needs.setup.outputs.matrix_jobs) }}
+      fail-fast: false
+    needs: [setup]
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch'
     steps:
       - name: Show Inputs
         shell: pwsh
