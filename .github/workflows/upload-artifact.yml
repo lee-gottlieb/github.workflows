@@ -22,26 +22,26 @@ jobs:
         # Input Values
         Write-Host "GreetingText: ${{ env.GreetingText }}"
 
-    - name: Get sources from github
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
+    # - name: Get sources from github
+    #   uses: actions/checkout@v4
+    #   with:
+    #     fetch-depth: 0
 
-    - name: Save TestFilter into json file
-      shell : pwsh
-      run: |
-        #Save sample file
-        $folderPath = "./TestOutputArtifacts/"
-        $TestFilterInfo = '{"include": ["test1", "test2"], "exclude": ["test3", "test4"]}' | ConvertTo-Json
-        Write-Host $TestFilterInfo
-        $TestFilterInfo | Out-File -FilePath "$folderPath/TestFilterInfo.json"    
+    # - name: Save TestFilter into json file
+    #   shell : pwsh
+    #   run: |
+    #     #Save sample file
+    #     $folderPath = "./TestOutputArtifacts/"
+    #     $TestFilterInfo = '{"include": ["test1", "test2"], "exclude": ["test3", "test4"]}' | ConvertTo-Json
+    #     Write-Host $TestFilterInfo
+    #     $TestFilterInfo | Out-File -FilePath "$folderPath/TestFilterInfo.json"    
 
-    - name: Generate specflow report based on runned tests
-      if: always()
-      uses: ../actions/generate-report
-      with:
-        TestNames: "sample-artifact"
-        TestRunType: "Playwright"
-        TestReportName: "test-report-name"
-        OutputArtifactsName: "OutputArtifacts"
+    # - name: Generate specflow report based on runned tests
+    #   if: always()
+    #   uses: ../actions/generate-report
+    #   with:
+    #     TestNames: "sample-artifact"
+    #     TestRunType: "Playwright"
+    #     TestReportName: "test-report-name"
+    #     OutputArtifactsName: "OutputArtifacts"
  
