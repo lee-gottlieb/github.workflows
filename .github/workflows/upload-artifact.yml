@@ -22,19 +22,27 @@ jobs:
         # Input Values
         Write-Host "GreetingText: ${{ env.GreetingText }}"
 
-    # - name: Get sources from github
-    #   uses: actions/checkout@v4
-    #   with:
-    #     fetch-depth: 0
+    - name: Get sources from github
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
 
-    # - name: Save TestFilter into json file
-    #   shell : pwsh
-    #   run: |
-    #     #Save sample file
-    #     $folderPath = "./TestOutputArtifacts/"
-    #     $TestFilterInfo = '{"include": ["test1", "test2"], "exclude": ["test3", "test4"]}' | ConvertTo-Json
-    #     Write-Host $TestFilterInfo
-    #     $TestFilterInfo | Out-File -FilePath "$folderPath/TestFilterInfo.json"    
+    - name: Save TestFilter into json file
+      shell : pwsh
+      run: |
+        #Save sample file
+        $folderPath = "./TestOutputArtifacts/"
+        
+        if (-not (Test-Path $folderPath)) {
+        New-Item -ItemType Directory -Path $folderPath
+            Write-Host "Folder created at $folderPath"
+        } else {
+            Write-Host "Folder already exists at $folderPath"
+        }
+        
+        $TestFilterInfo = '{"include": ["test1", "test2"], "exclude": ["test3", "test4"]}' | ConvertTo-Json
+        Write-Host $TestFilterInfo
+        $TestFilterInfo | Out-File -FilePath "$folderPath/TestFilterInfo.json"    
 
     # - name: Generate specflow report based on runned tests
     #   if: always()
