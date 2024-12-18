@@ -56,5 +56,5 @@ jobs:
         TestNames: "sample-artifact"
         TestRunType: "Playwright"
         TestReportName: "test-report-name"
-        OutputArtifactsName: "OutputArtifacts"
+        OutputArtifactsName: "output-artifacts-name"
  

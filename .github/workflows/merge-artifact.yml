@@ -1,0 +1,104 @@
+name: Upload artifact
+
+on:
+  workflow_dispatch:
+
+env:
+  TestReportFolder: 'TestReport'
+  OutputArtifactsFolder: 'OutputArtifactsFolder'
+  TestReport: 'Run-Tests-Report-${{ github.run_id }}-${{ github.run_attempt }}'
+  OutputArtifacts: 'Tests-Output-Artifacts-${{ github.run_id }}-${{ github.run_attempt }}'
+
+jobs:
+  setup:
+    name: start-workflow
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Get sources from github
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Save TestFilter into json file
+      shell : pwsh
+      run: |
+        #Save sample file
+        $folderPath = "./${{env.TestReportFolder}}/"
+
+        if (-not (Test-Path $folderPath)) {
+        New-Item -ItemType Directory -Path $folderPath
+            Write-Host "Folder created at $folderPath"
+        } else {
+            Write-Host "Folder already exists at $folderPath"
+        }
+
+        $jsonObject = @{
+            TestName = "sample-artifact"
+            TestFilter = @{ 
+            include = @("test1", "test2")
+            exclude = @("test3", "test4")}
+        }
+        $TestFilterInfo = $jsonObject | ConvertTo-Json
+        Write-Host $TestFilterInfo
+        $TestFilterInfo | Out-File -FilePath "$folderPath/TestFilterInfo.json"
+
+    - name: Save TestFilter into json file
+      shell : pwsh
+      run: |
+        #Save 10 html files
+
+        $folderPath = "./${{env.OutputArtifactsFolder}}/"
+        if (-not (Test-Path $folderPath)) {
+        New-Item -ItemType Directory -Path $folderPath
+            Write-Host "Folder created at $folderPath"
+        } else {
+            Write-Host "Folder already exists at $folderPath"
+        }
+
+        $htmlBody = @"
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Sample HTML Page</title>
+        </head>
+        <body>
+            <h1>Welcome to My Sample HTML Page</h1>
+            <p>This is a basic example of an HTML page. You can add more elements to customize it!</p> 
+            <p>Learn more about HTML by visiting <a href="https://developer.mozilla.org/en-US/docs/Web/HTML" target="_blank">MDN Web Docs</a>.</p>
+        </body>
+        </html>
+        "@
+        for ($i = 1; $i -le 10; $i++) {    
+            $htmlBody | Out-File -FilePath "$folderPath/generate_html_$($i).html"
+        }
+
+    - name: Generate specflow report based on runned tests
+      uses: ./.github/actions/upload-artifact
+      with:
+        TestNames: "sample-artifact"
+        TestRunType: "Playwright"
+        TestReportName: "test-report-name"
+        OutputArtifactsName: "output-artifacts-name"
+
+  merge-artifact:
+    name: Merge Artifact
+    runs-on: ubuntu-latest
+    if: ${{ success() || failure() }} 
+    steps:
+      - name: Merge Test Artifacts
+        uses: actions/upload-artifact/merge@v4
+        with:
+          name: ${{ env.TestReport }}
+          pattern: "${{ env.TestReport }}-*"
+          delete-merged: true
+          
+      - name: Merge Tests Output Artifacts
+        uses: actions/upload-artifact/merge@v4
+        with:
+          name: ${{ env.OutputArtifacts }}
+          pattern: "${{ env.OutputArtifacts }}-*"
+          delete-merged: true        
+ 
