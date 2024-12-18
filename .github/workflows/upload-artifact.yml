@@ -1,0 +1,53 @@
+name: Upload artifact
+
+on:
+  workflow_dispatch:
+    inputs:
+      GreetingText:
+        description: 'What do you want to say'
+        required: true
+        default: 'Hi, dispatch'
+
+env:
+  GreetingText: ${{ github.event.inputs.GreetingText || 'hi, default' }}
+
+jobs:
+  setup:
+    name: start-workflow
+    runs-on: ubuntu-24.04  #replacing runs-on: ubuntu-latest with runs-on: ubuntu-24.04
+    steps:
+    - name: Show Inputs
+      shell: pwsh
+      run: |
+        # Input Values
+        Write-Host "Url: ${{ env.Url }}"
+        Write-Host "GreetingText: ${{ env.GreetingText }}"
+
+    - name: Generate Token
+      id: generate_token
+      uses: actions/create-github-app-token@v1
+      with:
+        app-id: ${{ vars.GH_APP_IAMWGO_SECRET }}
+        private-key: ${{ secrets.GH_APP_IAMWGO_SECRET }}
+        owner: iamWGO
+
+    - name: Get sources from github
+      uses: actions/checkout@v4
+      with:
+        repository: '3ShapeInternal/ThreeShape.SilverLake.EndToEndTests'
+        fetch-depth: 0
+        token: ${{ steps.generate_token.outputs.token }}            
+
+    - name: Get sources from github
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Download artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: Tests-Output-Artifacts-${{ env.runId }}-${{ env.runAttemptId }}
+        github-token: ${{ steps.generate_token.outputs.token }} 
+        repository: 3ShapeInternal/ThreeShape.SilverLake.EndToEndTests
+        run-id: ${{ env.runId }}   
+ 

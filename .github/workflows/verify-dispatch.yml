@@ -1,0 +1,45 @@
+name: Verify dispatch workflow
+
+on:
+  schedule:
+    - cron:  '0 1 * * *' #schedule run at 01.00
+  workflow_call:
+    inputs:
+      Url:
+        type: string
+        description: 'Url'
+        required: true
+        default: 'https://wgoweb.com/'
+      GreetingText:
+        type: string
+        description: 'What do you want to say'
+        required: true
+        default: 'Hi, schedule run at 01.00'
+
+  workflow_dispatch:
+    inputs:
+      Url:
+        description: 'Url'
+        required: true
+        default: 'https://wgoweb.com/'
+      GreetingText:
+        description: 'What do you want to say'
+        required: true
+        default: 'Hi, dispatch'
+
+env:
+  Url: ${{ github.event.inputs.Url || 'https://wgoweb.com/' }}
+  GreetingText: ${{ github.event.inputs.GreetingText || 'hi, default' }}
+
+jobs:
+  setup:
+    name: start-workflow
+    runs-on: ubuntu-24.04  #replacing runs-on: ubuntu-latest with runs-on: ubuntu-24.04
+    steps:
+    - name: Show Inputs
+      shell: pwsh
+      run: |
+        # Input Values
+        Write-Host "Url: ${{ env.Url }}"
+        Write-Host "GreetingText: ${{ env.GreetingText }}"
+ 

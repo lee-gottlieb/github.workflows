@@ -1,0 +1,33 @@
+name: 'Generate secflow report'
+description: 'Generate specflow report based on runned tests'
+
+inputs:
+  TestNames:
+    description: 'The name of test report'
+    required: true
+  TestRunType:
+    description: 'Test run type'
+    required: true
+    default: "EndToEndTests"
+  TestReportName:
+    description: "Name for report"
+    required: true
+  OutputArtifactsName:
+    description: "Name for artifacts"
+    required: true
+
+runs:
+  using: 'composite'
+  steps:      
+    - name: Save tests output artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ inputs.OutputArtifactsName }}-${{ inputs.TestNames }}
+        path: ./TestOutputArtifacts
+
+    - name: Save live doc test result
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ inputs.TestReportName }}-${{ inputs.TestNames }}
+        path: ./TestReport/${{ inputs.TestNames }}.html
+        overwrite: true
