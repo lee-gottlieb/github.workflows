@@ -29,7 +29,7 @@ jobs:
           Write-Host ""
 
           $jobsHash = @{}
-          $jobsHash['include'] = $jobs
+          $jobsHash['include'] = $jobsObject
           $jobsHashJson = $jobsHash | ConvertTo-Json -Depth 10 -Compress
           Write-Host "jobsHashJson: $jobsHashJson"
 
