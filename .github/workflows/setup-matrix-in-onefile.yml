@@ -1,4 +1,4 @@
-name: Setup matrix
+name: Setup matrix in one file
 
 on:
   workflow_dispatch:
