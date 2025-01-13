@@ -14,7 +14,7 @@ on:
 jobs:
   labels-event:
     runs-on: ubuntu-latest
-    if: contains(github.event.pull_request.labels.*.name, 'labels-event')
+    if: contains(github.event.pull_request.labels.*.name, 'test')
     steps:
       - name: labels-event
         shell: pwsh
