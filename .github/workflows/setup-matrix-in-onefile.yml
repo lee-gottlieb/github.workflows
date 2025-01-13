@@ -1,0 +1,58 @@
+name: Setup matrix in one file
+
+on:
+  workflow_dispatch:
+
+jobs:
+  setup:
+    name: start-workflow
+    runs-on: ubuntu-latest
+    outputs:
+      max_parallel_jobs: ${{ steps.setup-matrix.outputs.max_parallel_jobs }}
+      matrix_jobs: ${{ steps.setup-matrix.outputs.matrix_jobs }}
+    steps:
+      - name: Get sources from GitHub
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Setup strategy matrix
+        id: setup-matrix
+        shell: pwsh
+        run: | 
+          $jsonContent = '[{"TestFilter":"Category1","Company":"Matrix1"},{"TestFilter":"Category2","Company":"Matrix2"},{"TestFilter":"Category3","Company":"Matrix3"},{"TestFilter":"Category4","Company":"Matrix4"},{"TestFilter":"Category5","Company":"Matrix5"},{"TestFilter":"Category6","Company":"Matrix6"},{"TestFilter":"Category7","Company":"Matrix7"},{"TestFilter":"Category8","Company":"Matrix8"},{"TestFilter":"Category9","Company":"Matrix9"},{"TestFilter":"Category10","Company":"Matrix10"}]'
+          $jobsObject = $jsonContent | ConvertFrom-Json 
+          $max_parallel_jobs = $jobsObject.Count
+  
+          Write-Host "total matrix = $max_parallel_jobs"
+          $jobsObject | Format-Table -AutoSize
+          Write-Host ""
+
+          $jobsHash = @{}
+          $jobsHash['include'] = $jobsObject
+          $jobsHashJson = $jobsHash | ConvertTo-Json -Depth 10 -Compress
+          Write-Host "jobsHashJson: $jobsHashJson"
+
+          echo "max_parallel_jobs=$max_parallel_jobs" >> $env:GITHUB_OUTPUT
+          echo "matrix_jobs=$jobsHashJson" >> $env:GITHUB_OUTPUT
+
+      - name: Show Outcomes
+        shell: pwsh
+        run: |
+          Write-Host "matrix_jobs: ${{ steps.setup-matrix.outputs.matrix_jobs }}"
+          Write-Host "max_parallel_jobs: ${{ steps.setup-matrix.outputs.max_parallel_jobs }}"
+
+  run-matrix:
+    name: Run Matrix
+    strategy:
+      matrix: ${{ fromJSON(needs.setup.outputs.matrix_jobs) }}
+      fail-fast: false
+    needs: [setup]
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Show Inputs
+        shell: pwsh
+        run: |
+          Write-Host "TestFilter: ${{ matrix.TestFilter }}"
+          Write-Host "Company: ${{ matrix.Company }}"
